@@ -10,9 +10,11 @@
 
 </head>
 
+
+
 <body>
     <script src="js/three.min.js"></script>
-    <script src="js/controls/OrbitControls.js" ></script>
+    <script src="js/controls/OrbitControls.js"></script>
     <script>
 
         // Scene variables
@@ -21,8 +23,8 @@
         // World variables
         var pyrGeometry, pyrMaterial
 
-        // Box variables
-        var boxGeometry, boxMaterial, boxMesh;
+        // Audio variables
+        var listener, audioSource, audioLoader;
 
         init();
         animate();
@@ -38,6 +40,24 @@
             scene.background = new THREE.Color(0xF0F8FF);
             scene.fog = new THREE.FogExp2(0x25FCB9, 0.0009);
 
+            // Audio
+            audioSource = new Audio("audio/ambient.ogg");
+            audioSource.play();
+
+            /*listener = new THREE.AudioListener();
+            camera.add(listener);
+
+            audioSource = new THREE.Audio(listener);
+
+            audioLoader = new THREE.AudioLoader();
+            audioLoader.load("audio/ambient.mp3", function (buffer) {
+                audioSource.setBuffer(buffer);
+                audioSource.setLoop(true);
+                audioSource.setVolume(1);
+                audioSource.play();
+            });*/
+
+
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,8 +66,9 @@
             // Controls
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.addEventListener('change', render);
-
-            controls.enableZoom = false;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.2;
+            controls.enableZoom = true;
 
             // Define the pyramids' geometry and material.
             pyrGeometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
@@ -74,13 +95,13 @@
 
             var light = new THREE.AmbientLight(0x222222);
             scene.add(light);
-           
+
         }
 
         function animate() {
 
             requestAnimationFrame(animate);
-
+            
             controls.update()
 
             render();
